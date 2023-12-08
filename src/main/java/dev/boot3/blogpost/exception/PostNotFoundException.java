@@ -9,7 +9,6 @@ public class PostNotFoundException extends RuntimeException {
     private Integer id;
 
     public PostNotFoundException(Integer id) {
-
         super("Post not found!");
         setId(id);
     }
