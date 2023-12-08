@@ -20,4 +20,6 @@ public class MyNotFoundException extends ErrorResponseException {
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
+
+
 }

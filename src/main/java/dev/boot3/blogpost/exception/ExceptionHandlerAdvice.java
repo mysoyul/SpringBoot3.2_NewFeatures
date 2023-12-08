@@ -23,13 +23,15 @@ public class ExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(MyNotFoundException.class)
-    ErrorResponse handleMyNotFoundException(MyNotFoundException e) {
-        return ErrorResponse.builder(e, HttpStatus.NOT_FOUND, e.getMessage())
-                .title("Customer not found")
-                .type(URI.create("https://api.bookmarks.com/errors/not-found"))
-                .detail("상세한 에러 메시지를 포함함")
-                .property("errorCategory", "Generic2")
-                .property("timestamp", Instant.now())
+    public ErrorResponse handleMyNotFoundException(MyNotFoundException e) {
+        return ErrorResponse.builder(e, e.getBody())
                 .build();
+//        return ErrorResponse.builder(e, HttpStatus.NOT_FOUND, e.getMessage())
+//                .title("Customer not found")
+//                .type(URI.create("https://api.bookmarks.com/errors/not-found"))
+//                .detail("상세한 에러 메시지를 포함함")
+//                .property("errorCategory", "Generic2")
+//                .property("timestamp", Instant.now())
+//                .build();
     }
 }
