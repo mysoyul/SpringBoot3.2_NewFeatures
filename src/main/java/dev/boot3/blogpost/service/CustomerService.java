@@ -1,6 +1,7 @@
 package dev.boot3.blogpost.service;
 
 import dev.boot3.blogpost.dto.Customer;
+import dev.boot3.blogpost.exception.MyNotFoundException;
 import dev.boot3.blogpost.exception.PostNotFoundException;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
@@ -41,7 +42,9 @@ public class CustomerService {
 //        return customerList.stream().filter(customer -> customer.id() == id)
 //                .findAny().orElseThrow(()->new RuntimeException("Customer Not found with id "+id));
         Customer existCustomer = customerList.stream().filter(customer -> customer.id() == id)
-                .findAny().orElseThrow(() -> new PostNotFoundException(id));
+                .findAny()
+                //.orElseThrow(() -> new PostNotFoundException(id));
+                .orElseThrow(() -> new MyNotFoundException(id));
         return Observation.createNotStarted("getCustomerById", registry)
                 .observe(() -> existCustomer);
     }
