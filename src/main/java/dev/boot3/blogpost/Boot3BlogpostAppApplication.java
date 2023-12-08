@@ -4,6 +4,8 @@ import dev.boot3.blogpost.client.JsonPlaceholderService;
 import dev.boot3.blogpost.model.Post;
 import dev.boot3.blogpost.repository.PostRepository;
 import dev.boot3.blogpost.service.PostService;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,15 +47,24 @@ public class Boot3BlogpostAppApplication {
 //		};
 //	}
 
-	//RestClient를 사용해서 HttpInterface의 Proxy 객체를 생성하기
+
+
+
+
 
 	@Bean
-	JsonPlaceholderService jsonPlaceholderService() {
-		RestClient client = RestClient.create("https://jsonplaceholder.typicode.com");
-		HttpServiceProxyFactory factory = HttpServiceProxyFactory
-				.builderFor(RestClientAdapter.create(client))
-				.build();
-		return factory.createClient(JsonPlaceholderService.class);
+	CommandLineRunner commandLineRunner(JsonPlaceholderService service,
+										PostRepository postRepository,
+										ObservationRegistry observationRegistry) {
+		return args -> {
+			List<Post> posts = Observation
+					.createNotStarted("json-place-holder.load-posts", observationRegistry)
+					.lowCardinalityKeyValue("some-value","88")
+					//.observe(() -> service.findAll());
+					.observe(service::findAll);
+			Observation
+					.createNotStarted("post-repository-save-all", observationRegistry)
+					.observe(() -> postRepository.saveAll(posts));
+		};
 	}
-
 }
