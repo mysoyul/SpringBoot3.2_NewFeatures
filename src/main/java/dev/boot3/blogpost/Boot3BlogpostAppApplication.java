@@ -47,11 +47,6 @@ public class Boot3BlogpostAppApplication {
 //		};
 //	}
 
-
-
-
-
-
 	@Bean
 	CommandLineRunner commandLineRunner(JsonPlaceholderService service,
 										PostRepository postRepository,
